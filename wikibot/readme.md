@@ -13,6 +13,9 @@
 * Try to analyze whats’ the average number of steps until a random phrase lands in **kernel**.
 * Is it true that you cannot leave **kernel**?
 
+### Example Kernel
+['the','at','for','this','not']
+
 ## Skills tested
 - structuring an app
 - logic programming
