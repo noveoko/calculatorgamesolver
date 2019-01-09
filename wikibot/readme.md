@@ -14,7 +14,7 @@
 * Is it true that you cannot leave **kernel**?
 
 ### Example Kernel
-['the','at','for','this','not']
+['mathematics']
 
 ## Skills tested
 - structuring an app
