@@ -19,5 +19,13 @@ def test_findNearestWord():
     assert distant_match[0] < 0.5
 
 def test_fetch_wiki_HTML():
-    page = App.fetch_wiki_HTML('Sarwark')
+    page = FetchData.fetchWikipediaHTML('Sarwark')
     assert 2000 < len(page) < 3000
+
+def test_randomWikipediaPages():
+    results = FetchData.randomWikipediaPages()
+    assert len(results) > 0
+
+# def test_topicCrumbtrail():
+#     results = FetchData.topicCrumbtrail('Germany')
+#     assert len(results) > 10 and type(results) == list
