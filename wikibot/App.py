@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import re, json
-
+import spacy, FetchData
 #return a single random wikipedia page
 def fetch_wiki_HTML(page_name=None):
     html = ""
@@ -19,12 +19,14 @@ def fetch_wiki_HTML(page_name=None):
 
 #return a single random wikipedia page title
 def fetch_random_pages(page_name=None):
-    page_url = 'https://en.wikipedia.org/w/api.php?action=query&list=random&rnlimit=10&format=json'
+    page_url = 'https://en.wikipedia.org/w/api.php?action=query&list=random&rnlimit=10&format=json&prop=pageprops&ppprop=disambiguation'
     response = requests.get(page_url, timeout=10)
+    print(response.json())
     if response.status_code == 200:
         data = response.json()
         assert(data), 'error processing json file'
-        list_of_titles = [a['title'] for a in data['query']['random']]
+        list_of_titles = [(a['title'],a['href']) for a in data['query']['random']]
+        print(list_of_titles)
         return list_of_titles
 
 #extract the first sensible link
@@ -33,21 +35,25 @@ def fetch_random_pages(page_name=None):
 def extract_links(page_title):
     all_links = []
     raw_html = fetch_wiki_HTML(page_title)
-    soup = bs(raw_html, 'html.parser')
-    paragraphs = [a for a in soup.findAll("p") if '<b>' in str(a)]
-    for paragraph in paragraphs:
-        just_text = re.sub(r"\(([\(].?)+\)", "", paragraph.text.lower())
-        links = paragraph.findAll("a")
-        for link in links:
-            try:
-                text = link.text
-                url = link['href']
-                if '/wiki/' in url and ':' not in url and '#cite-note' not in url and text.lower() in just_text:
-                    short_url = url.replace('/wiki/',"")
-                    #all_links.append([url, text])
-                    all_links.append(short_url)
-            except Exception as ee:
-                print(ee)
+    if not FetchData.checkIfDisambiguation(raw_html): #normal page `not a disambiguation page`
+        soup = bs(raw_html, 'html.parser')
+        paragraphs = [a for a in soup.findAll("p") if '<b>' in str(a)]
+        for paragraph in paragraphs:
+            just_text = re.sub(r"\(([\(].?)+\)", "", paragraph.text.lower())
+            links = paragraph.findAll("a")
+            for link in links:
+                try:
+                    text = link.text
+                    url = link['href']
+                    if '/wiki/' in url and ':' not in url and '#cite-note' not in url and text.lower() in just_text:
+                        short_url = url.replace('/wiki/',"")
+                        #all_links.append([url, text])
+                        all_links.append(short_url)
+                except Exception as ee:
+                    print(ee)
+    else:
+        print('DISAMBIGUATION PAGE! --run fuzzy search')
+
     return all_links[0]
 
 def fetch_all_links(topic,depth=20):
@@ -57,9 +63,17 @@ def fetch_all_links(topic,depth=20):
             target = collected[-1]
             next_link = extract_links(target)
             collected.append(next_link)
-            print(next_link)
+            print(next_link, f"PREVIOUS:{target}")
         except Exception as ee:
-            print(ee, "line 62")
+            print(ee)
+    return collected
+
+
+
+
 
 if __name__ == "__main__":
-    fetch_all_links('Germany',10)
+    links = fetch_all_links('Germany', 20)
+    for link in links:
+        print(link)
+    #extract_links('Activity')

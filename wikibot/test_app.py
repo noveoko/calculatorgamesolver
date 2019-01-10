@@ -1,19 +1,23 @@
-import app
+import FetchData, App
 
+def test_checkIfDisambiguation():
+    normal_page = FetchData.checkIfDisambiguation('Germany')
+    disamb_page = FetchData.checkIfDisambiguation('Activity')
+    assert not normal_page
+    assert disamb_page == 'disambiguation_page'
+
+def test_isList():
+    alist = FetchData.isList('List_of_record_labels:_A–H')
+    nolist = FetchData.isList('Germany')
+    assert alist
+    assert not nolist
+
+def test_findNearestWord():
+    perfect_match = FetchData.findNearestWord('abc',[['abc','alph.html'],['RZZ32','abc.js']])
+    distant_match = FetchData.findNearestWord('abc',[['B$RZ','d.txt'],['^^sfdz+Z)','a.txt']])
+    assert perfect_match[0] == 1.0
+    assert distant_match[0] < 0.5
 
 def test_fetch_wiki_HTML():
-    data = app.fetch_wiki_HTML('Germany')
-    assert type(data) == str
-
-def test_fetch_random_pages():
-    links = app.fetch_random_pages()
-    assert len(links) > 0
-
-def test_extract_links():
-    result = app.extract_links('Germany')
-    assert len(result) > 20
-    assert type(result) == list
-
-def test_fetch_all_links():
-    result = app.fetch_all_links('Germany',5)
-    assert result > 3
+    page = App.fetch_wiki_HTML('Sarwark')
+    assert 2000 < len(page) < 3000
