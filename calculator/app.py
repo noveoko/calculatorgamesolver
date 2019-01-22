@@ -12,9 +12,19 @@ class Utilities:
     def parseButtons(list_of_buttons):
         symbols = ['+','x','/']
         pass
+
     @staticmethod
     def listToNumber(list_of_numbers):
-        return int("".join([str(a) for a in list_of_numbers]))
+        result = None
+        assert list_of_numbers[0] != list
+        if type(list_of_numbers) == list:
+            result = int("".join([str(a) for a in list_of_numbers]))
+        elif type(list_of_numbers) == int:
+            result = list_of_numbers
+        else:
+            result = 'Error with listToNumber'
+        return result
+
     @staticmethod
     def generateRecipe(seed=None, moves=2):
         def getItem(key, value):
@@ -33,10 +43,18 @@ class Utilities:
     #takes as input list of lists [button, button_object, number] 
     #returns goal as a list [goalNumber, optimalPath] optimalPath when reversed is the correct solution to a given round
     @staticmethod
-    def generateGoal( ):
-        pass
+    def generateGoal(list_of_moves, start_number=10):
+        interface = app.Interface()
+        final_number = start_number
+        for item in list_of_moves:
+            move = item[0]
+            if move == 'add':
+                interface.add(final_number, )
 
 class Interface:
+
+    def __init__(self):
+        pass
 
     buttons = {'add':{'weight':1,'takesNum':True},
                 'minus':{'weight':1,'takesNum':True},
