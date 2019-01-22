@@ -1,6 +1,7 @@
+import random
 
 class Round:
-    def __init__(self, moves, goal, list_of_buttons):
+    def __init__(self, moves=[], goal=0, list_of_buttons=[]):
         self.moves = moves
         self.goal = goal
         self.list_of_buttons = list_of_buttons
@@ -12,6 +13,30 @@ class Utilities:
 
     def listToNumber(list_of_numbers):
         return int("".join([str(a) for a in list_of_numbers]))
+
+    def generateRecipe(seed=None, moves=2):
+        def getItem(key, value):
+            nlist = [key]
+            if value['takesNum'] == True: #return a number
+                nlist.append(random.choice(range(1,9)))
+            return tuple(nlist)
+
+        buttons = {'add':{'object':Interface.add, 'weight':1,'takesNum':True},
+                   'minus':{'object':Interface.minus, 'weight':1,'takesNum':True},
+                   'multiply':{'object':Interface.multiply, 'weight':0.96,'takesNum':True},
+                   'divide':{'object':Interface.divide, 'weight':0.95,'takesNum':True},
+                   'removeDigit':{'object':Interface.removeDigit, 'weight':0.2,'takesNum':False},
+                   'firstDigitToSecond':{'object':Interface.firstDigitToSecond, 'weight':0.1,'takesNum':False},
+                   'sumNumbers':{'object':Interface.sumNumbers, 'weight':0.5,'takesNum':False},
+                   'invX':{'object':Interface.invX, 'weight':0.01,'takesNum':False}}
+        if not seed:
+            data = random.choices(population=[getItem(k,v) for k,v in buttons.items()],weights=[v['weight'] for k,v in buttons.items()], k=moves)
+        else:
+            random.seed(seed)
+            data = random.choices(population=[getItem(k,v) for k,v in buttons.items()],weights=[v['weight'] for k,v in buttons.items()], k=moves)
+        return data
+
+    def generateGoal():
         
 class Interface:
 

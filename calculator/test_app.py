@@ -49,3 +49,7 @@ def test_divide():
 def test_listToNumber():
     test_list = [1,2,4,7]
     assert Utilities.listToNumber(test_list) == 1247
+
+def test_generateRecipe():
+    seed, moves = (3,5)
+    assert Utilities.generateRecipe(seed, 2) == ['minus', 'removeDigit']
