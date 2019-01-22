@@ -7,28 +7,22 @@ class Round:
         self.list_of_buttons = list_of_buttons
     
 class Utilities:
+
+    @staticmethod
     def parseButtons(list_of_buttons):
         symbols = ['+','x','/']
         pass
-
+    @staticmethod
     def listToNumber(list_of_numbers):
         return int("".join([str(a) for a in list_of_numbers]))
-
+    @staticmethod
     def generateRecipe(seed=None, moves=2):
         def getItem(key, value):
             nlist = [key]
             if value['takesNum'] == True: #return a number
                 nlist.append(random.choice(range(1,9)))
             return tuple(nlist)
-
-        buttons = {'add':{'object':Interface.add, 'weight':1,'takesNum':True},
-                   'minus':{'object':Interface.minus, 'weight':1,'takesNum':True},
-                   'multiply':{'object':Interface.multiply, 'weight':0.96,'takesNum':True},
-                   'divide':{'object':Interface.divide, 'weight':0.95,'takesNum':True},
-                   'removeDigit':{'object':Interface.removeDigit, 'weight':0.2,'takesNum':False},
-                   'firstDigitToSecond':{'object':Interface.firstDigitToSecond, 'weight':0.1,'takesNum':False},
-                   'sumNumbers':{'object':Interface.sumNumbers, 'weight':0.5,'takesNum':False},
-                   'invX':{'object':Interface.invX, 'weight':0.01,'takesNum':False}}
+        buttons = Interface.buttons
         if not seed:
             data = random.choices(population=[getItem(k,v) for k,v in buttons.items()],weights=[v['weight'] for k,v in buttons.items()], k=moves)
         else:
@@ -36,39 +30,56 @@ class Utilities:
             data = random.choices(population=[getItem(k,v) for k,v in buttons.items()],weights=[v['weight'] for k,v in buttons.items()], k=moves)
         return data
 
-    def generateGoal():
-        
+    #takes as input list of lists [button, button_object, number] 
+    #returns goal as a list [goalNumber, optimalPath] optimalPath when reversed is the correct solution to a given round
+    @staticmethod
+    def generateGoal( ):
+        pass
+
 class Interface:
 
-    def __init__(self, number=0):
-        self.number = number
+    buttons = {'add':{'weight':1,'takesNum':True},
+                'minus':{'weight':1,'takesNum':True},
+                'multiply':{'weight':0.96,'takesNum':True},
+                'divide':{'weight':0.95,'takesNum':True},
+                'removeDigit':{'weight':0.2,'takesNum':False},
+                'firstDigitToSecond':{'weight':0.1,'takesNum':False},
+                'sumNumbers':{'weight':0.5,'takesNum':False},
+                'invX':{'weight':0.01,'takesNum':False}}
+
 
     # `+` button
+    @staticmethod
     def add(inputNum, list_of_digits):
         number = Utilities.listToNumber(list_of_digits)
         return number + inputNum
 
     # `-` button
+    @staticmethod
     def minus(inputNum , list_of_digits):
         number = Utilities.listToNumber(list_of_digits)
         return number - inputNum
 
     # `x` or `*` button
+    @staticmethod
     def multiply(inputNum, list_of_digits):
         number = Utilities.listToNumber(list_of_digits)
         return number * inputNum
 
     # `/` button
+    @staticmethod
     def divide(inputNum, list_of_digits):
         number = Utilities.listToNumber(list_of_digits)
         return number / inputNum
 
     # `<<` button
+    @staticmethod
     def removeDigit(list_of_digits):
         list_of_digits.pop()
         return list_of_digits
 
     # `1=>2` button
+    @staticmethod
     def firstDigitToSecond(list_of_digits):
         def returnNumber(inputnum ,number_1, number_2):
             if inputnum == number_1:
@@ -85,12 +96,15 @@ class Interface:
             return 'problem with list input'
 
     # `SUM` button
+    @staticmethod
     def sumNumbers(list_of_numbers):
         return sum(list_of_numbers)
 
-    def storeNumber(self, number):
-        self.number = number
+    @staticmethod
+    def storeNumber(number):
+        number = number
 
+    @staticmethod
     def invX(list_of_digits,x=10):
         return [a-x for a in list_of_digits]
 

@@ -23,7 +23,7 @@ def test_store_number():
     test_number = 5
     a = Interface()
     result = a.storeNumber(test_number)
-    assert a.number == test_number
+    assert result == None
 
 def test_invx():
     testLists = [[0],[-1,5,0,0]]
@@ -51,5 +51,5 @@ def test_listToNumber():
     assert Utilities.listToNumber(test_list) == 1247
 
 def test_generateRecipe():
-    seed, moves = (3,5)
-    assert Utilities.generateRecipe(seed, 2) == ['minus', 'removeDigit']
+    seed, moves = (3,2)
+    assert Utilities.generateRecipe(seed, moves) == [('multiply', 6), ('add', 4)]
