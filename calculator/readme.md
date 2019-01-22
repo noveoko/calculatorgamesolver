@@ -8,3 +8,4 @@ https://www.appunwrapper.com/2017/07/13/calculator-the-game-walkthrough-guide-an
 
 ## Programming Task
 Deliver the generic solver for such tasks. (Can be limited to several operations only but please consider operations of shift, negation, and digit replacing). The solver don’t have to have a UI.
+
