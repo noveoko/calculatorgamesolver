@@ -16,7 +16,6 @@ class Utilities:
     @staticmethod
     def listToNumber(list_of_numbers):
         result = None
-        assert list_of_numbers[0] != list
         if type(list_of_numbers) == list:
             result = int("".join([str(a) for a in list_of_numbers]))
         elif type(list_of_numbers) == int:
@@ -44,12 +43,30 @@ class Utilities:
     #returns goal as a list [goalNumber, optimalPath] optimalPath when reversed is the correct solution to a given round
     @staticmethod
     def generateGoal(list_of_moves, start_number=10):
-        interface = app.Interface()
-        final_number = start_number
+        interface = Interface()
+        balance = start_number
         for item in list_of_moves:
             move = item[0]
-            if move == 'add':
-                interface.add(final_number, )
+            number = None
+            if item[1] and type(item[1]) == int:
+                if move == 'add':
+                    balance += interface.add(balance, item[1])
+                elif move == 'minus':
+                    balance += interface.minus(balance, item[1])
+                elif move == 'multiply':
+                    balance += interface.multiply(balance, item[1])
+                elif move == 'divide':
+                    balance += interface.divide(balance, item[1])
+            elif not item[1]:
+                if move == 'removeDigit':
+                    balance = interface.removeDigit(balance)
+                elif move == 'firstDigitToSecond':
+                    balance = interface.firstDigitToSecond(balance)
+                elif move == 'sumNumbers':
+                    balance = interface.sumNumbers(balance)
+                elif move == 'invX':
+                    balance = interface.invX(balance)
+        return balance
 
 class Interface:
 
@@ -68,48 +85,53 @@ class Interface:
 
     # `+` button
     @staticmethod
-    def add(inputNum, list_of_digits):
-        number = Utilities.listToNumber(list_of_digits)
+    def add(inputNum, balance):
+        number = Utilities.listToNumber(balance)
         return number + inputNum
 
     # `-` button
     @staticmethod
-    def minus(inputNum , list_of_digits):
-        number = Utilities.listToNumber(list_of_digits)
+    def minus(inputNum , balance):
+        number = Utilities.listToNumber(balance)
         return number - inputNum
 
     # `x` or `*` button
     @staticmethod
-    def multiply(inputNum, list_of_digits):
-        number = Utilities.listToNumber(list_of_digits)
+    def multiply(inputNum, balance):
+        number = Utilities.listToNumber(balance)
         return number * inputNum
 
     # `/` button
     @staticmethod
-    def divide(inputNum, list_of_digits):
-        number = Utilities.listToNumber(list_of_digits)
+    def divide(inputNum, balance):
+        number = Utilities.listToNumber(balance)
         return number / inputNum
 
     # `<<` button
     @staticmethod
-    def removeDigit(list_of_digits):
-        list_of_digits.pop()
-        return list_of_digits
+    def removeDigit(balance):
+        if type(balance) == list:
+            balance.pop()
+            return balance
+        elif type(balance) == int:
+            temp = [str(a) for a in balance.split()]
+            temp.pop()
+            return temp      
 
     # `1=>2` button
     @staticmethod
-    def firstDigitToSecond(list_of_digits):
+    def firstDigitToSecond(balance):
         def returnNumber(inputnum ,number_1, number_2):
             if inputnum == number_1:
                 return number_2
             else:
                 return inputnum
-        if len(list_of_digits) >= 2:
-            first_digit = list_of_digits[0]
-            second_digit = list_of_digits[1]
-            return [returnNumber(a, first_digit, second_digit) for a in list_of_digits]
-        elif len(list_of_digits) == 1:
-            return list_of_digits
+        if len(balance) >= 2:
+            first_digit = balance[0]
+            second_digit = balance[1]
+            return [returnNumber(a, first_digit, second_digit) for a in balance]
+        elif len(balance) == 1:
+            return balance
         else:
             return 'problem with list input'
 
@@ -123,8 +145,8 @@ class Interface:
         number = number
 
     @staticmethod
-    def invX(list_of_digits,x=10):
-        return [a-x for a in list_of_digits]
+    def invX(balance,x=10):
+        return [a-x for a in balance]
 
 # – [+]1 adds that number to all the buttons.
 

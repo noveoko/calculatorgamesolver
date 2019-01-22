@@ -2,6 +2,7 @@ import pytest
 from app import Interface
 from app import Round
 from app import Utilities
+import math
 
 def test_remove_digits():
     lists = [[0,3,4,5],[0,0],[-23,0,1]]
@@ -47,9 +48,27 @@ def test_divide():
     assert Interface.divide(2, test_list) == 5
 
 def test_listToNumber():
-    test_list = [1,2,4,7]
-    assert Utilities.listToNumber(test_list) == 1247
+    test_data = [[1,2,4,7],4675]
+    assert Utilities.listToNumber(test_data[0]) == 1247
+    assert Utilities.listToNumber(test_data[1]) == 4675
 
 def test_generateRecipe():
     seed, moves = (3,2)
     assert Utilities.generateRecipe(seed, moves) == [('multiply', 6), ('add', 4)]
+
+def test_generateGoal():
+    tests = [{'moves':[('add', 10),('divide', 2)],
+              'output': 410, 
+              'balance':200},
+             {'moves':[('add', 10),('divide', 2),('multiply', 12)],
+              'output': 390, 
+              'balance':10},
+             {'moves':[('subtract', 10),('invX'),('divide', 12),('firstDigitToSecond'),('add',200)],
+              'output': 214, 
+              'balance':4}]
+
+    for test in tests:
+        moves = test['moves']
+        result = Utilities.generateGoal(moves, test['balance'])
+        assert math.floor(result) == test['output']
+
