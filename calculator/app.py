@@ -5,12 +5,17 @@ class Round:
         self.moves = moves
         self.goal = goal
         self.list_of_buttons = list_of_buttons
+
+    def play(self, seed=3, moves=13, balance=4):
+        recipe = Utilities.generateRecipe(seed, moves)
+        target = Utilities.generateGoal(recipe, balance)
+        return {'recipe':recipe,'target':target,'balance':balance,'moves':int(moves)}
     
 class Utilities:
 
     @staticmethod
     def parseButtons(list_of_buttons):
-        symbols = ['+','x','/']
+        symbols = ['+','x','/','-']
         pass
 
     @staticmethod
@@ -24,64 +29,38 @@ class Utilities:
             result = 'Error with listToNumber'
         return result
 
-    @staticmethod
-    def generateRecipe(seed=None, moves=2):
-        def getItem(key, value):
-            nlist = [key]
-            if value['takesNum'] == True: #return a number
-                nlist.append(random.choice(range(1,9)))
-            return tuple(nlist)
-        buttons = Interface.buttons
-        if not seed:
-            data = random.choices(population=[getItem(k,v) for k,v in buttons.items()],weights=[v['weight'] for k,v in buttons.items()], k=moves)
-        else:
-            random.seed(seed)
-            data = random.choices(population=[getItem(k,v) for k,v in buttons.items()],weights=[v['weight'] for k,v in buttons.items()], k=moves)
-        return data
-
     #takes as input list of lists [button, button_object, number] 
     #returns goal as a list [goalNumber, optimalPath] optimalPath when reversed is the correct solution to a given round
-    @staticmethod
-    def generateGoal(list_of_moves, start_number=10):
-        interface = Interface()
-        balance = start_number
-        for item in list_of_moves:
-            move = item[0]
-            number = None
-            if item[1] and type(item[1]) == int:
-                if move == 'add':
-                    balance += interface.add(balance, item[1])
-                elif move == 'minus':
-                    balance += interface.minus(balance, item[1])
-                elif move == 'multiply':
-                    balance += interface.multiply(balance, item[1])
-                elif move == 'divide':
-                    balance += interface.divide(balance, item[1])
-            elif not item[1]:
-                if move == 'removeDigit':
-                    balance = interface.removeDigit(balance)
-                elif move == 'firstDigitToSecond':
-                    balance = interface.firstDigitToSecond(balance)
-                elif move == 'sumNumbers':
-                    balance = interface.sumNumbers(balance)
-                elif move == 'invX':
-                    balance = interface.invX(balance)
-        return balance
+    
+    ##GENERETA GAOL FUNC HERE
 
 class Interface:
 
     def __init__(self):
         pass
 
-    buttons = {'add':{'weight':1,'takesNum':True},
-                'minus':{'weight':1,'takesNum':True},
-                'multiply':{'weight':0.96,'takesNum':True},
-                'divide':{'weight':0.95,'takesNum':True},
-                'removeDigit':{'weight':0.2,'takesNum':False},
-                'firstDigitToSecond':{'weight':0.1,'takesNum':False},
-                'sumNumbers':{'weight':0.5,'takesNum':False},
-                'invX':{'weight':0.01,'takesNum':False}}
+    def generateMoves(sent_seed=None, moves=4):
+        def returnNumber(k,v):
+            result = None
+            if v['takesNum'] == True:
+                random.seed(sent_seed)
+                result = (k,random.choice(range(1,10)))
+            else:
+                result = (k)
+            return result
 
+        buttons = {'add':{'weight':1,'takesNum':True},
+            'minus':{'weight':1,'takesNum':True},
+            'multiply':{'weight':0.96,'takesNum':True},
+            'divide':{'weight':0.95,'takesNum':True},
+            'removeDigit':{'weight':0.2,'takesNum':False},
+            'firstDigitToSecond':{'weight':0.1,'takesNum':False},
+            'sumNumbers':{'weight':0.5,'takesNum':False},
+            'invX':{'weight':0.01,'takesNum':False}}
+        population = [returnNumber(k,v) for k,v in buttons.items()]
+        weights = [v['weight']for k,v in buttons.items()]
+        random.seed(sent_seed)
+        return random.choices(population,weights=weights, k=moves)
 
     # `+` button
     @staticmethod
@@ -92,8 +71,12 @@ class Interface:
     # `-` button
     @staticmethod
     def minus(inputNum , balance):
+        assert inputNum, '`inputNum` must not be empty'
+        num = inputNum
+        if type(inputNum) is list and inputNum!='':
+            num = int("".join(inputNum))
         number = Utilities.listToNumber(balance)
-        return number - inputNum
+        return number - num
 
     # `x` or `*` button
     @staticmethod
@@ -114,7 +97,7 @@ class Interface:
             balance.pop()
             return balance
         elif type(balance) == int:
-            temp = [str(a) for a in balance.split()]
+            temp = [a for a in str(balance)]
             temp.pop()
             return temp      
 
@@ -150,3 +133,5 @@ class Interface:
 
 # – [+]1 adds that number to all the buttons.
 
+if __name__ == "__main__":
+    print('app')
