@@ -1,20 +1,28 @@
 import re
-from itertools import permutations
-from itertools import cycle
 
 class Parse:
+
+    def __init__(self):
+        pass
+
+    def extract_numbers(self, button_string):
+        if re.match('\d+', button_string): #numbers in string
+            return re.findall('(\d+)',button_string)
+        else:
+            return button_string
 
     def extract_buttons(self, string_of_buttons):
         """takes a string '+2,+5,/7' and converts it to button tuples"""
         buttons = set()
-        s = string_of_buttons
-        r = re.compile("((?P<add>\+\d+)|(?P<multiply>x\d+)|(?P<divide>\/\d+)|(?P<balance>\(\d+\))|(?P<subtract>\-\d+)|(?P<delete_last>\<\<)|(?P<replace_num>\d+\=\>\d+)|(?P<insert_number>\d))")
-        result = [m.groupdict() for m in r.finditer(s)]
-        for dct in result:
-            for k,v in dct.items():
-                if v:
-                    buttons.add((k,v))
-        return buttons
+        list_buttons = string_of_buttons.split(",")
+        r = re.compile("((?P<add>\+(\d+))|(?P<multiply>x(\d+))|(?P<divide>\/(\d+))|(?P<balance>\((\d+)\))|(?P<subtract>\-(\d+))|(?P<delete_last>\<\<)|(?P<replace_num>(\d+)\=\>(\d+))|(?P<insert_number>(\d)))")
+        for button_string in list_buttons:
+            matches = r.finditer(button_string)
+            for m in matches:
+                for k,v in m.groupdict().items():
+                    if v!=None:
+                        print(k,self.extract_numbers(v))      
+      
 
 class Calculator:
     
@@ -62,17 +70,6 @@ class Calculator:
     def invX(self, balance,x=10):
         pass
 
-class Solver:
-    
-    @staticmethod
-    def findSolution(data):
-        """takes a list of tuples [('add',3),('subtract',9)], balance, moves, and goal
-        and outputs a solution or None if no solution is available"""
-        buttons = list(data['buttons'])
-        c = cycle(buttons)
-        if len(buttons) < data['moves']:
-            buttons.append(next(c))
-        return buttons
 
     
 if __name__ == "__main__":
