@@ -1,4 +1,5 @@
 import random
+import itertools
 
 class Round:
     def __init__(self, moves=[], goal=0, list_of_buttons=[]):
@@ -29,10 +30,16 @@ class Utilities:
             result = 'Error with listToNumber'
         return result
 
-    #takes as input list of lists [button, button_object, number] 
-    #returns goal as a list [goalNumber, optimalPath] optimalPath when reversed is the correct solution to a given round
-    
-    ##GENERETA GAOL FUNC HERE
+    @staticmethod
+    def generateGoal(balance=0,buttons=['x2','+3'],steps=3, end_balance=12):
+        parsed_buttons = set()
+        for button in buttons:
+            
+            if 'x' in button:
+                parseButtons.add(['multiply',])
+
+        possible = itertools.permutations()
+
 
 class Interface:
 
@@ -57,6 +64,7 @@ class Interface:
             'firstDigitToSecond':{'weight':0.1,'takesNum':False},
             'sumNumbers':{'weight':0.5,'takesNum':False},
             'invX':{'weight':0.01,'takesNum':False}}
+
         population = [returnNumber(k,v) for k,v in buttons.items()]
         weights = [v['weight']for k,v in buttons.items()]
         random.seed(sent_seed)

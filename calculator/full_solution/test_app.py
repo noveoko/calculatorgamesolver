@@ -2,6 +2,7 @@ import pytest
 from app import Interface
 from app import Round
 from app import Utilities
+import parse
 import math
 
 def test_remove_digits():
@@ -52,10 +53,6 @@ def test_listToNumber():
     assert Utilities.listToNumber(test_data[0]) == 1247
     assert Utilities.listToNumber(test_data[1]) == 4675
 
-def test_generateMoves():
-    result = Interface.generateMoves(34,3)
-    assert result == [('multiply', 9), ('multiply', 9), 'removeDigit']
-
 @pytest.mark.skip(reason="need to fix this by full refactor")
 def test_generateGoal():
     tests = [{'moves':[('add', 10),('divide', 2)],
@@ -78,3 +75,9 @@ def test_generateRecipeGenerateGoal():
     moves = Interface.generateMoves(seed, moves)
     goal = Utilities.generateGoal(moves,balance)
     assert goal == 30
+
+def test_parse_solutions():
+    '''takes as input solutions available online and outputs dictionary'''
+    test = '19	1 | 0 | 1 = 101'
+    result = parse.parse_solutions([test])
+    assert result == [{'balance': 0, 'steps': ['19\t1 ', ' 0 ', ' 1 '], 'target': ' 101'}]

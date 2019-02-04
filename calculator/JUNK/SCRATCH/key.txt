@@ -1,0 +1,8 @@
++N, add
+xN, multiply by N
+(N), set balance to N
+-N, subtract N
+/N, divide by N
+<<, delete last number from balance
+N1=>N2, change all occurences of N1 to N2 in balance
+N, insert N at end of balance
